@@ -112,11 +112,38 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+@layer utilities {
+
+  .gradient {
+    @apply bg-gradient-to-br from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 font-extrabold tracking-tighter pr-2 pb-2 text-transparent bg-clip-text;
+  }
+
+}
+
+.hero-image-wrapper {
+  perspective: 1000px;
+}
+
+.hero-img {
+  transform: rotateX(15deg) scale(1);
+  transition: transform 0.5s ease-out;
+  will-change: transform;
+}
+
+.hero-img.scrolled {
+  transform: rotateX(0deg) translateY(40px) scale(1);
 }
