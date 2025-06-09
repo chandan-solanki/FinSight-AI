@@ -16,15 +16,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={inter.className}>
-        <body>
+      <html
+        lang="en"
+        className={inter.className + " overflow-x-hidden scroll-smooth"}
+      >
+        <body className="overflow-x-hidden">
           <Header />
-          <main className="min-h-screen flex flex-col">
-            <div>Main Page</div>
-            {children}
-          </main>
 
-          <footer className="bg-gray-100 border-t border-gray-200 py-10">
+          <main className="min-h-screen flex flex-col my-4">{children}</main>
+
+          <footer className="bg-gray-100 border-t border-gray-200 py-5">
             <div className="text-center p-4">
               <p className="text-sm text-gray-500">
                 © {new Date().getFullYear()} FinSight AI. All rights reserved.

@@ -38,12 +38,12 @@ const Hero = () => {
 
   return (
     <div className="pb-20 px-4">
-      <div className="container mx-auto text-center pb-5">
+      <div className="container mx-auto  text-center pb-5">
         <div className="">
-          <h1 className="text-[105px] gradient max-md:text-8xl max-sm:text-5xl ">
+          <h1 className="text-[105px] gradient max-md:text-6xl max-sm:text-3xl max-lg:text-6xl max-xl:text-7xl">
             Welcome to FinSight AI
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl max-sm:text-sm text-gray-600 mb-8 max-w-2xl mx-auto">
             AI-Powered Insights for a Brighter Financial Future.
           </p>
         </div>
@@ -67,9 +67,9 @@ const Hero = () => {
           <Image
             width={1000}
             height={1000}
-            src={"/bg3.jpg"}
+            src={"/bg1.jpg"}
             alt="Hero Image"
-            className="w-[85%] mx-auto rounded-lg shadow-lg"
+            className="w-[80%] mx-auto rounded-lg shadow-lg"
           />
         </div>
       </div>
