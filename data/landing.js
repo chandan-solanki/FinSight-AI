@@ -88,24 +88,24 @@ export const howItWorksData = [
 // Testimonials Data
 export const testimonialsData = [
   {
-    name: "Sarah Johnson",
-    role: "Small Business Owner",
-    image: "https://randomuser.me/api/portraits/women/75.jpg",
+    name: "Tony Stark",
+    role: "Startup Founder",
+    image: "https://randomuser.me/api/portraits/men/32.jpg",
     quote:
-      "FinSight AI has transformed how I manage my business finances. The AI insights have helped me identify cost-saving opportunities I never knew existed.",
+      "FinSight AI gave me a clear overview of my company's cash flow. The automated insights are a game changer for fast-paced businesses.",
   },
   {
-    name: "Michael Chen",
-    role: "Freelancer",
-    image: "https://randomuser.me/api/portraits/men/75.jpg",
+    name: "Lisa Kim",
+    role: "Remote Consultant",
+    image: "https://randomuser.me/api/portraits/women/50.jpg",
     quote:
-      "The receipt scanning feature saves me hours each month. Now I can focus on my work instead of manual data entry and expense tracking.",
+      "Managing multiple currencies and accounts is effortless now. The smart analytics help me make better decisions for my clients.",
   },
   {
-    name: "Emily Rodriguez",
-    role: "Financial Advisor",
-    image: "https://randomuser.me/api/portraits/women/74.jpg",
+    name: "David Lee",
+    role: "Personal Finance Blogger",
+    image: "https://randomuser.me/api/portraits/men/40.jpg",
     quote:
-      "I recommend FinSight AI to all my clients. The multi-currency support and detailed analytics make it perfect for international investors.",
+      "I love how FinSight AI simplifies budgeting and tracking. The AI-powered recommendations are spot on for anyone serious about their finances.",
   },
 ];
