@@ -2,7 +2,6 @@
 
 Master your money with FinSight AI — a modern finance tracker built with Next.js. It provides authentication, a landing experience, and a robust Postgres data model (via Prisma) for users, accounts, transactions, and budgets. The UI uses Tailwind and shadcn components.
 
-Inspired by: https://github.com/piyush-eon/ai-finance-platform
 
 ### Features
 - Authentication with Clerk (protected routes via middleware)
@@ -89,5 +88,4 @@ Middleware guards routes like `/dashboard`, `/account`, `/transactions`. Unauthe
 - Seed data: add a Prisma seed script if needed.
 - If you want AI receipts/insights or scheduled jobs like the reference project, add server actions and providers (Gemini, Inngest, Resend) and wire them to these models.
 
-### License
-This project is for learning/demo purposes. Credits to the original inspiration linked above.
+
