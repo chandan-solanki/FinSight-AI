@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## FinSight AI
 
-## Getting Started
+Master your money with FinSight AI — a modern finance tracker built with Next.js. It provides authentication, a landing experience, and a robust Postgres data model (via Prisma) for users, accounts, transactions, and budgets. The UI uses Tailwind and shadcn components.
 
-First, run the development server:
+Inspired by: https://github.com/piyush-eon/ai-finance-platform
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Features
+- Authentication with Clerk (protected routes via middleware)
+- Landing page with features, stats, testimonials (`app/page.js`)
+- Prisma schema for Users, Accounts, Transactions (incl. recurring fields), and Budgets (`prisma/schema.prisma`)
+- Reusable UI components (shadcn) in `components/ui/*`
+
+Planned/optional (not yet wired in this repo):
+- AI receipt scanning and insights (Gemini)
+- Background jobs for recurring transactions and budget alerts (Inngest)
+- Transaction analytics and emails (Resend + templates)
+
+### Tech Stack
+- Next.js (App Router), React 19
+- Tailwind CSS 4, shadcn UI (Radix primitives)
+- Clerk auth (`@clerk/nextjs`)
+- Prisma ORM with PostgreSQL
+
+### Prerequisites
+- Node.js 18.18+ or 20+
+- PostgreSQL database (connection URL)
+- Clerk account (publishable + secret keys)
+
+### Environment Variables
+Create a `.env` file in the project root:
+
+```
+DATABASE_URL=postgres://<user>:<password>@<host>:<port>/<db>
+DIRECT_URL=postgres://<user>:<password>@<host>:<port>/<db>
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+
+# Optional Clerk paths if you customize routes
+# NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+# NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install & Run
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+# install deps
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# generate prisma client
+npx prisma generate
 
-## Learn More
+# apply schema to DB (creates tables)
+npx prisma migrate dev --name init
 
-To learn more about Next.js, take a look at the following resources:
+# start dev server
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Scripts
+- `npm run dev` — start Next.js in dev mode (Turbopack)
+- `npm run build` — production build
+- `npm run start` — start prod server
+- `npm run lint` — lint the project
 
-## Deploy on Vercel
+### Project Structure (high level)
+- `app/` — app router pages and layouts
+	- `layout.js` — root layout, Clerk provider, header/footer
+	- `page.js` — landing page
+	- `(auth)/sign-in`, `(auth)/sign-up` — Clerk auth routes
+- `components/` — `Header`, `HeroSection`, and `ui/*` primitives
+- `prisma/schema.prisma` — data models for User, Account, Transaction, Budget
+- `lib/utils.js` — utility helpers (className merge)
+- `middleware.js` — protects routes with Clerk
+- `next.config.mjs`, `postcss.config.mjs`, `tailwind` config files
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Data Model Overview
+- User: links to Accounts, Transactions, Budgets
+- Account: name, type (CURRENT/SAVINGS), balance, isDefault
+- Transaction: type (INCOME/EXPENSE), amount, date, category, recurring fields
+- Budget: per-user budget amount
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Auth & Protected Routes
+Middleware guards routes like `/dashboard`, `/account`, `/transactions`. Unauthenticated users are redirected to sign-in.
+
+### Notes / Next Steps
+- Seed data: add a Prisma seed script if needed.
+- If you want AI receipts/insights or scheduled jobs like the reference project, add server actions and providers (Gemini, Inngest, Resend) and wire them to these models.
+
+### License
+This project is for learning/demo purposes. Credits to the original inspiration linked above.
