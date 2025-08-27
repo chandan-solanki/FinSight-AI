@@ -9,8 +9,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { LayoutDashboard, LucideLayoutDashboard, PenBox } from "lucide-react";
+import { checkUser } from "@/lib/checkUser";
 
-const Header = () => {
+const Header = async () => {
+  await checkUser();
+
   return (
     <div className="w-full bg-white/50 backdrop-blur-md top-0 fixed border-b z-50 px-4">
       <nav className="flex justify-between items-center py-2">
