@@ -12,17 +12,19 @@ const serializeAccount = (obj) => {
     serialize.balance = Number(obj.balance);
   }
 
-  return obj;
+  return serialize;
 };
 
 export default async function createAccount(data) {
   try {
-    const userId = auth.userId;
+
+    const { userId } = await auth();
+
     if (!userId) {
-      throw new Error("User not authenticated");
+      throw new Error("User not authenticated errr");
     }
 
-    const user = await db.user.findUnique({ where: { clearkUserId: userId } });
+    const user = await db.user.findUnique({ where: { clerkUserId: userId } });
 
     if (!user) {
       throw new Error("User not found");
@@ -52,10 +54,10 @@ export default async function createAccount(data) {
 
     const account = await db.account.create({
       data: {
+        ...data,
         userId: user.id,
         balance: balanceFloat,
         isDefault: shouldBeDefault,
-        ...data,
       },
     });
 
