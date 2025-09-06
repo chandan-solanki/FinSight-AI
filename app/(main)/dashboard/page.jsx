@@ -1,14 +1,20 @@
+import { getAccounts } from "@/actions/dashboard";
 import CreateAccountDrawer from "@/components/CreateAccountDrawer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
+import AccountCard from "./_components/account-card";
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
+  const accounts = await getAccounts();
+
+  console.log(accounts);
+
   return (
     <div>
       {/* Budget Progess */}
       {/* Overview */}
       {/* Account Grid */}
-      <div className="grid md:gri-cols-2 lg:grid-cols-3">
+      <div className="grid mt-3 gap-4 md:grid-cols-2 lg:grid-cols-3">
         <CreateAccountDrawer>
           <Card className="hover:shadow-md w-full cursor-pointer trasition-shadow border-dashed ">
             <CardContent className="flex flex-col items-center text-muted-foreground pt-2 w-full h-full justify-center">
@@ -17,6 +23,11 @@ const DashboardPage = () => {
             </CardContent>
           </Card>
         </CreateAccountDrawer>
+
+        {accounts.serializedAccount.length > 0 &&
+          accounts.serializedAccount.map((account) => {
+            return <AccountCard key={account.id} account={account} />;
+          })}
       </div>
     </div>
   );

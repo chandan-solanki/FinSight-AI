@@ -5,8 +5,13 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 
+
 const serializeAccount = (obj) => {
   const serialize = { ...obj };
+
+  if (obj.amount) {
+    serialize.amount = Number(obj.amount);
+  }
 
   if (obj.balance) {
     serialize.balance = Number(obj.balance);
@@ -64,6 +69,38 @@ export default async function createAccount(data) {
     const serializedAccount = serializeAccount(account);
 
     revalidatePath("/dashboard");
+    return { success: true, serializedAccount };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+
+export async function getAccounts() {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const accounts = await db.account.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      include : {
+        transactions: true,
+      }
+    });
+
+
+     const serializedAccount = accounts.map(serializeAccount);
+
     return { success: true, serializedAccount };
   } catch (err) {
     throw new Error(err.message);

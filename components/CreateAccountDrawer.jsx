@@ -70,7 +70,7 @@ const CreateAccountDrawer = ({ children }) => {
   return (
     <div>
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild className="w-full">
+        <DrawerTrigger asChild className="w-full h-full">
           {children}
         </DrawerTrigger>
 
