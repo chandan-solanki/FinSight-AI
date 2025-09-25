@@ -1,6 +1,6 @@
 import { getAccountWithTransaction } from "@/actions/account";
 import NotFound from "@/app/not-found";
-import useFetch from "@/hooks/use-fetch";
+
 import React, { Suspense } from "react";
 import { BarLoader } from "react-spinners";
 import TransactionTable from "../_components/transaction-table";
@@ -15,6 +15,8 @@ const AccountPage = async ({ params }) => {
   console.log("Account with transactions", account);
 
   return (
+
+
     <div className="space-y-8 px-5 ">
       <div className="flex gap-4 items-end justify-between">
         <div>
