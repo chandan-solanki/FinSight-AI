@@ -6,13 +6,14 @@ import { BarLoader } from "react-spinners";
 import TransactionTable from "../_components/transaction-table";
 
 const AccountPage = async ({ params }) => {
-  const account = await getAccountWithTransaction(params.id);
+  let p = await params;
+  const account = await getAccountWithTransaction(p.id);
 
   if (!account) {
     NotFound();
   }
 
-  console.log("Account with transactions", account);
+  // console.log("Account with transactions", account);
 
   return (
 

@@ -3,7 +3,6 @@
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import tr from "zod/v4/locales/tr.cjs";
 
 const serializeAccount = (obj) => {
   const serialize = { ...obj };
@@ -79,12 +78,79 @@ export const getAccountWithTransaction = async (accountId) => {
     },
   });
 
-  if(!account) {
+  if (!account) {
     return null;
   }
 
   return {
     ...serializeAccount(account),
-    transactions: account.transactions.map(serializeAccount)
+    transactions: account.transactions.map(serializeAccount),
+  };
+};
+
+export const bulkDeleteTransactions = async (transactionIds) => {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      throw new Error("User not authenticated errr");
+    }
+
+    const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    
+    const transactions = await db.transaction.findMany({
+      where: {
+        id: { in: transactionIds },
+        userId: user.id,
+      },
+    });
+
+
+
+    const acccountBalanceChange = transactions.reduce((acc, curr) => {
+      let change = acc.type === "EXPENSE" ? -curr.amount : curr.amount;
+
+      acc[curr.accountId] = (acc[curr.accountId] || 0) + change;
+      return acc;
+    }, {});
+
+    console.log("ACCOUNT BALANCE CHANGE : " , acccountBalanceChange)
+
+
+    await db.$transaction(async (tx) => {
+      await tx.transaction.deleteMany({
+        where: {
+          id: { in: transactionIds },
+          userId: user.id,
+        },
+      });
+
+      for (const [accountId, balanceChange] of Object.entries(
+        acccountBalanceChange
+      )) {
+       await tx.account.update({
+          where: {
+            id: accountId,
+          },
+          data: {
+            balance: {
+              increment: Number.parseInt(balanceChange),
+            },
+          },
+        });
+      }
+    });
+
+      revalidatePath("/dashboard");
+      revalidatePath("/account/[id]");
+      return "success";
+  } catch (err) {
+    return { success: false, message: err.message };
+    // throw new Error(err.message);
   }
 };
