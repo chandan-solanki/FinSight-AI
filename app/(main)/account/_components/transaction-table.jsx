@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
@@ -53,6 +62,7 @@ import useFetch from "@/hooks/use-fetch";
 import { bulkDeleteTransactions } from "@/actions/account";
 import { toast } from "sonner";
 import { BarLoader } from "react-spinners";
+import { Limelight } from "next/font/google";
 
 const RECURRING_INTERVALS = {
   DAILY: "Daily",
@@ -60,6 +70,8 @@ const RECURRING_INTERVALS = {
   MONTHLY: "Monthly",
   YEARLY: "Yearly",
 };
+
+const limit = 10;
 
 const TransactionTable = ({ transactions }) => {
   const router = useRouter();
@@ -69,6 +81,8 @@ const TransactionTable = ({ transactions }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, settypeFilter] = useState("");
   const [recurringFilter, setrecurringFilter] = useState("");
+  const [totalPage, setTotalPage] = useState(0);
+  const [selectPage, setSelectPage] = useState(1);
 
   const [sortConfig, setSortConfig] = useState({
     field: "date",
@@ -76,12 +90,12 @@ const TransactionTable = ({ transactions }) => {
   });
 
   const {
-    data : deleted,
+    data: deleted,
     fn: deleteFn,
     loading: deleteLoading,
   } = useFetch(bulkDeleteTransactions);
 
-
+  console.log({ totalPage });
 
   const handleBulkDelete = async () => {
     if (
@@ -93,6 +107,8 @@ const TransactionTable = ({ transactions }) => {
     }
     deleteFn(selectsId);
   };
+
+  console.log({ selectPage });
 
   useEffect(() => {
     // console.log(deleted , deleteLoading)
@@ -111,6 +127,7 @@ const TransactionTable = ({ transactions }) => {
       result = result.filter((t) =>
         t.description?.toLowerCase().includes(searchLower)
       );
+      setSelectPage(1);
     }
 
     if (recurringFilter) {
@@ -118,10 +135,12 @@ const TransactionTable = ({ transactions }) => {
         if (recurringFilter === "recurring") return t.isRecurring === true;
         return t.isRecurring === false;
       });
+      setSelectPage(1);
     }
 
     if (typeFilter) {
       result = result.filter((t) => t.type === typeFilter);
+      setSelectPage(1);
     }
 
     if (sortConfig) {
@@ -146,10 +165,23 @@ const TransactionTable = ({ transactions }) => {
 
         return sortConfig.direction === "asc" ? comparison : -comparison;
       });
+      // setSelectPage(1);
     }
 
+    let cntTotalPage = Math.ceil(result.length / limit);
+    setTotalPage(cntTotalPage);
+
+    console.log(result);
+    result = result.slice(limit * (selectPage - 1), limit * selectPage);
     return result;
-  }, [transactions, searchTerm, typeFilter, recurringFilter, sortConfig]);
+  }, [
+    transactions,
+    searchTerm,
+    typeFilter,
+    recurringFilter,
+    sortConfig,
+    selectPage
+  ]);
 
   // console.log(sortConfig);
 
@@ -186,14 +218,22 @@ const TransactionTable = ({ transactions }) => {
     settypeFilter("");
     setrecurringFilter("");
     setSelectsId([]);
+    setSelectPage(1);
   };
 
-  // console.log(selectsId);
+  const handleSelectPage = (ind) => {
+    console.log("slecte fnc click : ", { ind });
+    if (ind > 0 && ind <= totalPage) {
+      setSelectPage(ind);
+    }
+  };
 
   return (
     <div className="space-y-4">
       {/* FILTERS  */}
-      {deleteLoading &&  <BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
+      {deleteLoading && (
+        <BarLoader className="mt-4" width={"100%"} color="#9333ea" />
+      )}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <SearchIcon className="absolute left-2 top-2.5 w-4 h-4 text-muted-foreground" />
@@ -244,7 +284,7 @@ const TransactionTable = ({ transactions }) => {
             </Button>
           )}
 
-          {(searchTerm || typeFilter || recurringFilter) && (
+          {(searchTerm || typeFilter || recurringFilter || selectsId) && (
             <Button
               variant={"outline"}
               size="icon"
@@ -257,9 +297,7 @@ const TransactionTable = ({ transactions }) => {
           )}
         </div>
       </div>
-
       {/* TRANSACTIONS */}
-
       <div className="rounded-md border">
         <Table>
           <TableHeader className="text-muted-foreground">
@@ -437,7 +475,9 @@ const TransactionTable = ({ transactions }) => {
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             variant="destructive"
-                            onClick={() => {deleteFn([transaction.id])}}
+                            onClick={() => {
+                              deleteFn([transaction.id]);
+                            }}
                           >
                             Delete
                           </DropdownMenuItem>
@@ -451,6 +491,36 @@ const TransactionTable = ({ transactions }) => {
           </TableBody>
         </Table>
       </div>
+      {/* PAGINATION SECTION */}
+
+      {filteredAndSortedTransactions.length > 0 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem className="cursor-pointer">
+              <PaginationPrevious
+                onClick={() => handleSelectPage(selectPage - 1)}
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink
+                className="cursor-pointer"
+              >
+                {selectPage}
+              </PaginationLink>
+            </PaginationItem>
+            {selectPage < totalPage - 1 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+            <PaginationItem className="cursor-pointer">
+              <PaginationNext
+                onClick={() => handleSelectPage(selectPage + 1)}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 };
