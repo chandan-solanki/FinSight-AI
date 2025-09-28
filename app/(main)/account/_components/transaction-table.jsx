@@ -127,7 +127,6 @@ const TransactionTable = ({ transactions }) => {
       result = result.filter((t) =>
         t.description?.toLowerCase().includes(searchLower)
       );
-      setSelectPage(1);
     }
 
     if (recurringFilter) {
@@ -135,12 +134,10 @@ const TransactionTable = ({ transactions }) => {
         if (recurringFilter === "recurring") return t.isRecurring === true;
         return t.isRecurring === false;
       });
-      setSelectPage(1);
     }
 
     if (typeFilter) {
       result = result.filter((t) => t.type === typeFilter);
-      setSelectPage(1);
     }
 
     if (sortConfig) {
@@ -165,7 +162,6 @@ const TransactionTable = ({ transactions }) => {
 
         return sortConfig.direction === "asc" ? comparison : -comparison;
       });
-      // setSelectPage(1);
     }
 
     let cntTotalPage = Math.ceil(result.length / limit);
@@ -182,6 +178,10 @@ const TransactionTable = ({ transactions }) => {
     sortConfig,
     selectPage
   ]);
+
+  useEffect(()=> {
+    setSelectPage(1);
+  }, [searchTerm,sortConfig,recurringFilter ,typeFilter])
 
   // console.log(sortConfig);
 
@@ -508,7 +508,7 @@ const TransactionTable = ({ transactions }) => {
                 {selectPage}
               </PaginationLink>
             </PaginationItem>
-            {selectPage < totalPage - 1 && (
+            {selectPage <= totalPage - 1 && (
               <PaginationItem>
                 <PaginationEllipsis />
               </PaginationItem>
