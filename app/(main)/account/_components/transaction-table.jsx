@@ -63,6 +63,7 @@ import { bulkDeleteTransactions } from "@/actions/account";
 import { toast } from "sonner";
 import { BarLoader } from "react-spinners";
 import { Limelight } from "next/font/google";
+import { startsWith } from "zod";
 
 const RECURRING_INTERVALS = {
   DAILY: "Daily",
@@ -95,7 +96,7 @@ const TransactionTable = ({ transactions }) => {
     loading: deleteLoading,
   } = useFetch(bulkDeleteTransactions);
 
-  console.log({ totalPage });
+  // console.log({ totalPage });
 
   const handleBulkDelete = async () => {
     if (
@@ -108,7 +109,7 @@ const TransactionTable = ({ transactions }) => {
     deleteFn(selectsId);
   };
 
-  console.log({ selectPage });
+  // console.log({ selectPage });
 
   useEffect(() => {
     // console.log(deleted , deleteLoading)
@@ -167,7 +168,7 @@ const TransactionTable = ({ transactions }) => {
     let cntTotalPage = Math.ceil(result.length / limit);
     setTotalPage(cntTotalPage);
 
-    console.log(result);
+    // console.log(result);
     result = result.slice(limit * (selectPage - 1), limit * selectPage);
     return result;
   }, [
@@ -176,12 +177,12 @@ const TransactionTable = ({ transactions }) => {
     typeFilter,
     recurringFilter,
     sortConfig,
-    selectPage
+    selectPage,
   ]);
 
-  useEffect(()=> {
+  useEffect(() => {
     setSelectPage(1);
-  }, [searchTerm,sortConfig,recurringFilter ,typeFilter])
+  }, [searchTerm, sortConfig, recurringFilter, typeFilter]);
 
   // console.log(sortConfig);
 
@@ -222,7 +223,7 @@ const TransactionTable = ({ transactions }) => {
   };
 
   const handleSelectPage = (ind) => {
-    console.log("slecte fnc click : ", { ind });
+    // console.log("slecte fnc click : ", { ind });
     if (ind > 0 && ind <= totalPage) {
       setSelectPage(ind);
     }
@@ -284,7 +285,10 @@ const TransactionTable = ({ transactions }) => {
             </Button>
           )}
 
-          {(searchTerm || typeFilter || recurringFilter || selectsId) && (
+          {(searchTerm ||
+            typeFilter ||
+            recurringFilter ||
+            selectsId.length > 0) && (
             <Button
               variant={"outline"}
               size="icon"
@@ -465,7 +469,7 @@ const TransactionTable = ({ transactions }) => {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             onClick={() => {
-                              console.log("Edit Clicked..");
+                              // console.log("Edit Clicked..");
                               router.push(
                                 `/transaction/create?edit=${transaction.id}}`
                               );
@@ -502,11 +506,7 @@ const TransactionTable = ({ transactions }) => {
               />
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink
-                className="cursor-pointer"
-              >
-                {selectPage}
-              </PaginationLink>
+               <PaginationLink isActive={selectPage} className="cursor-pointer">{selectPage}</PaginationLink>
             </PaginationItem>
             {selectPage <= totalPage - 1 && (
               <PaginationItem>

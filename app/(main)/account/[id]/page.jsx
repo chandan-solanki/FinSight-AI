@@ -4,6 +4,7 @@ import NotFound from "@/app/not-found";
 import React, { Suspense } from "react";
 import { BarLoader } from "react-spinners";
 import TransactionTable from "../_components/transaction-table";
+import AccountChart from "../_components/account-chart";
 
 const AccountPage = async ({ params }) => {
   let p = await params;
@@ -16,8 +17,6 @@ const AccountPage = async ({ params }) => {
   // console.log("Account with transactions", account);
 
   return (
-
-
     <div className="space-y-8 px-5 ">
       <div className="flex gap-4 items-end justify-between">
         <div>
@@ -41,7 +40,11 @@ const AccountPage = async ({ params }) => {
       </div>
 
       {/* CHARTS SECTION  */}
-
+      <Suspense
+        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
+      >
+        <AccountChart transactions={account.transactions} />
+      </Suspense>
       {/* // TRANSACTION TABLE */}
 
       <Suspense
