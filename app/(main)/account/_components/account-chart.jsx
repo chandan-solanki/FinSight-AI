@@ -1,5 +1,6 @@
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { endOfDay, format, startOfDay, subDays } from "date-fns";
 import { Gruppo } from "next/font/google";
 import React, { useMemo, useState } from "react";
@@ -8,11 +9,20 @@ import {
   BarChart,
   CartesianGrid,
   Legend,
+  Rectangle,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const DATA_RANGES = {
   "7D": { label: "Last 7 Days", days: 7 },
@@ -61,47 +71,127 @@ const AccountChart = ({ transactions }) => {
       return acc;
     }, {});
 
-    console.log("grouped : ", grouped);
+    // console.log("grouped : ", grouped);
 
     return Object.values(grouped).sort((a, b) => {
       return new Date(a.date) - new Date(b.date);
     });
   }, [dataRange, transactions]);
 
-  console.log("filterTransationData " , filterTransationData)
+  const total = useMemo(() => {
+    return filterTransationData.reduce(
+      (acc, day) => {
+        acc.income += day.income;
+        acc.expense += day.expense;
+        return acc;
+      },
+      { income: 0, expense: 0 }
+    );
+  }, [filterTransationData]);
+
+  console.log({ total });
+
+  console.log("filterTransationData ", filterTransationData);
 
   return (
-    <div>
-      {/* <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          width={500}
-          height={300}
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar
-            dataKey="pv"
-            fill="#8884d8"
-            activeBar={<Rectangle fill="pink" stroke="blue" />}
-          />
-          <Bar
-            dataKey="uv"
-            fill="#82ca9d"
-            activeBar={<Rectangle fill="gold" stroke="purple" />}
-          />
-        </BarChart> */}
-      {/* </ResponsiveContainer> */}
-    </div>
+    <Card>
+      <CardHeader className="flex justify-between items-center space-x-0.5">
+        <CardTitle className="text-base font-normal">
+          Transaction Overview
+        </CardTitle>
+        <Select defaultValue={dataRange} onValueChange={setDataRange}>
+          <SelectTrigger className="w-[160px] cursor-pointer">
+            <SelectValue placeholder="Select Range" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(DATA_RANGES).map(([key, { label }]) => {
+              return (
+                <SelectItem className="cursor-pointer" value={key}>
+                  {label}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
+      </CardHeader>
+
+      <CardContent>
+        <div className="flex flex-row justify-around mb-7 text-sm">
+          <div className="text-center">
+            <p className="text-muted-foreground">Total Income</p>
+            <p className="font-bold text-lg text-green-500">
+              {total.income.toFixed(2)}
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-muted-foreground">Total Expense</p>
+            <p className="font-bold text-lg text-red-500">
+              {total.expense.toFixed(2)}
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-muted-foreground">Total Income</p>
+            <p
+              className={`font-bold text-lg ${
+                total.income - total.expense.toFixed(2) >= 0
+                  ? "text-green-500"
+                  : "text-red-500"
+              }`}
+            >
+              {total.income - total.expense.toFixed(2)}
+            </p>
+          </div>
+        </div>
+        <div className="h-[350px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={filterTransationData}
+              margin={{
+                top: 10,
+                right: 10,
+                left: 10,
+                bottom: 0,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis
+                dataKey="date"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(value) => `$${value}`}
+              />
+              <Tooltip
+                formatter={(value) => [`$${value}`, undefined]}
+                contentStyle={{
+                  backgroundColor: "hsl(var(--popover))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: "var(--radius)",
+                }}
+              />
+              <Legend />
+              <Bar
+                dataKey="income"
+                name={"Income"}
+                fill="#22c55e"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey="expense"
+                name={"Expense"}
+                fill="#ef4444"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
