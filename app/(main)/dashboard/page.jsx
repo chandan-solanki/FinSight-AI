@@ -3,15 +3,31 @@ import CreateAccountDrawer from "@/components/CreateAccountDrawer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import AccountCard from "./_components/account-card";
+import { getCurrentBudget } from "@/actions/budget";
+import BudgetProgress from "./_components/buget-progress";
 
 const DashboardPage = async () => {
   const accounts = await getAccounts();
 
-  console.log(accounts);
+  const defaultAccount = accounts.serializedAccount?.find((a) => a.isDefault);
+
+  let budgetData = null;
+  if (defaultAccount) {
+    console.log(defaultAccount);
+    budgetData = await getCurrentBudget(defaultAccount.id);
+  }
+
+  console.log(budgetData);
 
   return (
     <div>
       {/* Budget Progess */}
+      {defaultAccount && (
+        <BudgetProgress
+          initialBudget={budgetData?.budget}
+          currentExpenses={budgetData?.currentExpenses || 0}
+        />
+      )}
       {/* Overview */}
       {/* Account Grid */}
       <div className="grid mt-3 gap-4 md:grid-cols-2 lg:grid-cols-3">

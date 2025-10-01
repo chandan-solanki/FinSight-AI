@@ -17,6 +17,14 @@ const serializeAccount = (obj) => {
     serialize.balance = Number(obj.balance);
   }
 
+  // Serialize transactions if they exist
+  if (obj.transactions && Array.isArray(obj.transactions)) {
+    serialize.transactions = obj.transactions.map(transaction => ({
+      ...transaction,
+      amount: Number(transaction.amount), // Convert Decimal to Number
+    }));
+  }
+
   return serialize;
 };
 

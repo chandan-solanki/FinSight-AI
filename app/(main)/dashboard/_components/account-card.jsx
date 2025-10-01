@@ -15,22 +15,10 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-const serializeAccount = (obj) => {
-  const serialize = { ...obj };
 
-  if (obj.amount) {
-    serialize.amount = Number(obj.amount);
-  }
-
-  if (obj.balance) {
-    serialize.balance = Number(obj.balance);
-  }
-
-  return serialize;
-};
 
 const AccountCard = ({ account }) => {
-  const { id, name, type, balance, isDefault } = serializeAccount(account);
+  const { id, name, type, balance, isDefault } = (account);
 
   const {
     data: updatedAccount,
