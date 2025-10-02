@@ -4,7 +4,7 @@ import {BarLoader} from 'react-spinners'
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className='px-5'>
+    <div className='px-5 space-y-2'>
         <h1 className="text-6xl font-bold text-center gradient">Dashboard</h1>
 
         <Suspense fallback={

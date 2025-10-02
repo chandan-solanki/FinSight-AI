@@ -16,7 +16,7 @@ const useFetch = (cb) => {
       setError(null);
     } catch (err) {
       setError(err);
-      toast.error(err.message || "Something went wrong");
+      // toast.error(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

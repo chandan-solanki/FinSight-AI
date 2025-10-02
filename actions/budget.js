@@ -35,6 +35,10 @@ export async function getCurrentBudget(accountId) {
       0
     );
 
+    // console.log({startOfMonth})
+    // console.log({endOfMonth})
+    // startOfMonth = "Wed Jul 01 2025 00:00:00 GMT+0530 (India Standard Time)"
+    // endOfMonth = "Wed Jul 30 2025 00:00:00 GMT+0530 (India Standard Time)"
     const expenses = await db.transaction.aggregate({
       where: {
         userId: user.id,
@@ -68,7 +72,7 @@ export async function updateBudget(amount) {
     if (!userId) throw new Error("Unauthorized");
 
     const user = await db.user.findUnique({
-      where: { clearkUserId: userId },
+      where: { clerkUserId: userId },
     });
 
     if (!user) {
@@ -99,6 +103,6 @@ export async function updateBudget(amount) {
     };
   } catch (error) {
     console.error("error on update budget: ", error);
-    throw error;
+    return { success: false, error: error.message };
   }
 }
