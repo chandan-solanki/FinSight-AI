@@ -35,10 +35,7 @@ export async function getCurrentBudget(accountId) {
       0
     );
 
-    // console.log({startOfMonth})
-    // console.log({endOfMonth})
-    // startOfMonth = "Wed Jul 01 2025 00:00:00 GMT+0530 (India Standard Time)"
-    // endOfMonth = "Wed Jul 30 2025 00:00:00 GMT+0530 (India Standard Time)"
+
     const expenses = await db.transaction.aggregate({
       where: {
         userId: user.id,
@@ -53,6 +50,8 @@ export async function getCurrentBudget(accountId) {
         amount: true,
       },
     });
+
+    console.log("expeneses " , expenses)
 
     return {
       budget: budget ? { ...budget, amount: budget.amount.toNumber() } : null,

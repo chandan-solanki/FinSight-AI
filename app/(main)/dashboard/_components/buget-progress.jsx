@@ -26,12 +26,13 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     initialBudget?.amount?.toString() || ""
   );
 
-  console.log({ initialBudget });
+  // console.log({ initialBudget });
+  // console.log({ currentExpenses });
 
-  //   let percentUsed = initialBudget
-  //     ? (currentExpenses / initialBudget.amount) * 100
-  //     : 0;
-  let percentUsed = 40;
+    let percentUsed = initialBudget
+      ? (currentExpenses / initialBudget.amount) * 100
+      : 0;
+  // let percentUsed = 40;
 
   const {
     loading: isLoading,
@@ -50,8 +51,8 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     await updateBudgetFn(amount);
   };
 
-  console.log(updateBudgetData);
-  console.log(isLoading)
+  // console.log(updateBudgetData);
+  // console.log(isLoading)
 
   useEffect(() => {
     if (updateBudgetData?.success) {
