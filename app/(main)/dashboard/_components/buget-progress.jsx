@@ -67,7 +67,7 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     }
   }, [error]);
 
-  console.log(error);
+  // console.log(error);
 
   const handleCancel = () => {
     setNewBudget(initialBudget?.amount?.toString() || "");

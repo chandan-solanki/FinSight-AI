@@ -119,7 +119,7 @@ export const bulkDeleteTransactions = async (transactionIds) => {
       return acc;
     }, {});
 
-    console.log("ACCOUNT BALANCE CHANGE : " , acccountBalanceChange)
+    // console.log("ACCOUNT BALANCE CHANGE : " , acccountBalanceChange)
 
 
     await db.$transaction(async (tx) => {

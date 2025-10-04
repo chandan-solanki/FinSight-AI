@@ -3,6 +3,7 @@
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { startsWith } from "zod";
 
 export async function getCurrentBudget(accountId) {
   try {
@@ -35,6 +36,8 @@ export async function getCurrentBudget(accountId) {
       0
     );
 
+    console.log({ startOfMonth });
+    console.log({ endOfMonth });
 
     const expenses = await db.transaction.aggregate({
       where: {
@@ -51,7 +54,7 @@ export async function getCurrentBudget(accountId) {
       },
     });
 
-    console.log("expeneses " , expenses)
+    // console.log("expeneses ", expenses);
 
     return {
       budget: budget ? { ...budget, amount: budget.amount.toNumber() } : null,
