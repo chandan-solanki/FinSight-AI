@@ -23,7 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { format, formatDate } from "date-fns";
+import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -54,6 +54,8 @@ const AddTransactionForm = ({ accounts, categories }) => {
     },
   });
 
+  console.log(errors);
+
   const {
     loading: transactionLoading,
     fn: transactionFn,
@@ -78,7 +80,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
   };
 
   useEffect(() => {
-    console.log(transactionResult)
+    console.log(transactionResult);
     if (transactionResult?.success && !transactionLoading) {
       toast.success("Transaction created successfully");
       reset();
@@ -250,9 +252,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
 
       {isRecurring && (
         <div className="w-full flex flex-col gap-1 ">
-          <label htmlFor="" className="text-sm font-medium">
-            Recurring Interval
-          </label>
+          <label className="text-sm font-medium">Recurring Interval</label>
           <Select
             onValueChange={(value) => setValue("recurringInterval", value)}
             defaultValues={getValues("recurringInterval")}
@@ -261,10 +261,10 @@ const AddTransactionForm = ({ accounts, categories }) => {
               <SelectValue placeholder="Select Interval" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={"DAILY"}>Daily</SelectItem>
-              <SelectItem value={"WEEKLY"}>Weekly</SelectItem>
-              <SelectItem value={"MONTHLY"}>Monthly</SelectItem>
-              <SelectItem value={"YEARLY"}>Yearly</SelectItem>
+              <SelectItem value="DAILY">Daily</SelectItem>
+              <SelectItem value="WEEKLY">Weekly</SelectItem>
+              <SelectItem value="MONTHLY">Monthly</SelectItem>
+              <SelectItem value="YEARLY">Yearly</SelectItem>
             </SelectContent>
           </Select>
           {errors.recurringInterval && (
