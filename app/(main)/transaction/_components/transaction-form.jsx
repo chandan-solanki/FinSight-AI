@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { get, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { transactionSchema } from "@/app/lib/schema";
 import useFetch from "@/hooks/use-fetch";
@@ -31,6 +31,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
+import ReceiptScanner from "./receipt-scanner";
 
 const AddTransactionForm = ({ accounts, categories }) => {
   const router = useRouter();
@@ -51,10 +52,9 @@ const AddTransactionForm = ({ accounts, categories }) => {
       accountId: accounts.find((ac) => ac.isDefault)?.id,
       date: new Date(),
       isRecurring: false,
+      category: "",
     },
   });
-
-  console.log(errors);
 
   const {
     loading: transactionLoading,
@@ -65,6 +65,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
   const type = watch("type");
   const isRecurring = watch("isRecurring");
   const date = watch("date");
+  // const category = watch("category");
 
   const filterdCategories = categories.filter(
     (category) => category.type === type
@@ -88,15 +89,36 @@ const AddTransactionForm = ({ accounts, categories }) => {
     }
   }, [transactionLoading, transactionResult]);
 
+  const handleScanComleted = (scanData) => {
+    console.log(scanData);
+
+    if (scanData) {
+      setValue("amount", scanData.amount.toString());
+      setValue("date", new Date(scanData.date));
+
+      if (scanData.description) {
+        setValue("description", scanData.description);
+      }
+
+      if (scanData.category) {
+        setValue("category", scanData.category);
+      }
+    }
+  };
+
+  // console.log({ category });
+
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       {/* AI RECIPT SCANNER  */}
+
+      <ReceiptScanner onScanComplete={handleScanComleted} />
 
       <div className="space-y-2">
         <label className="text-sm font-medium">Type</label>
         <Select
           onValueChange={(value) => setValue("type", value)}
-          defaultValues={type}
+          value={type}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select type" />
@@ -133,7 +155,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
           </label>
           <Select
             onValueChange={(value) => setValue("accountId", value)}
-            defaultValues={getValues("accountId")}
+            value={getValues("accountId")}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select account" />
@@ -169,8 +191,8 @@ const AddTransactionForm = ({ accounts, categories }) => {
           Category
         </label>
         <Select
+          value={getValues("category")}
           onValueChange={(value) => setValue("category", value)}
-          defaultValues={getValues("category")}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select category" />
