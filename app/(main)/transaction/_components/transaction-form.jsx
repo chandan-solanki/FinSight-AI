@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import ReceiptScanner from "./receipt-scanner";
+import { Space_Mono } from "next/font/google";
 
 const AddTransactionForm = ({ accounts, categories }) => {
   const router = useRouter();
@@ -65,7 +66,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
   const type = watch("type");
   const isRecurring = watch("isRecurring");
   const date = watch("date");
-  // const category = watch("category");
+  const category = watch("category");
 
   const filterdCategories = categories.filter(
     (category) => category.type === type
@@ -106,6 +107,9 @@ const AddTransactionForm = ({ accounts, categories }) => {
     }
   };
 
+  // setValue("category", "food");
+
+  // console.log({ accounts: getValues("accountId") });
   // console.log({ category });
 
   return (
@@ -116,10 +120,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
 
       <div className="space-y-2">
         <label className="text-sm font-medium">Type</label>
-        <Select
-          onValueChange={(value) => setValue("type", value)}
-          value={type}
-        >
+        <Select onValueChange={(value) => setValue("type", value)} value={type}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select type" />
           </SelectTrigger>
@@ -155,7 +156,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
           </label>
           <Select
             onValueChange={(value) => setValue("accountId", value)}
-            value={getValues("accountId")}
+            defaultValue={getValues("accountId")}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select account" />
@@ -191,8 +192,9 @@ const AddTransactionForm = ({ accounts, categories }) => {
           Category
         </label>
         <Select
-          value={getValues("category")}
+          defaultValue={getValues("category")}
           onValueChange={(value) => setValue("category", value)}
+          value={category}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select category" />
