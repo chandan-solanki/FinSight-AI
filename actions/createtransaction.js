@@ -11,7 +11,7 @@ const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const serializeAmount = (obj) => {
   return {
     ...obj,
-    amount: obj.amount.toNumber(),
+    amount: Number(obj.amount),
   };
 };
 
@@ -183,5 +183,109 @@ export async function scanReceipt(file) {
     }
   } catch (err) {
     throw new Error(err.message);
+  }
+}
+
+export async function getTransaction(id) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const user = await db.user.findUnique({
+    where: { clerkUserId: userId },
+  });
+
+  if (!user) throw new Error("User not found");
+  console.log({id})
+
+  const transaction = await db.transaction.findUnique({
+    where: {
+      id,
+      userId: user.id,
+    },
+  });
+
+  if (!transaction) throw new Error("Transaction not found");
+  // console.log({transaction})
+
+  return serializeAmount(transaction);
+}
+
+export async function updateTransaction(id, data) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      throw new Error("User not authenticated errr");
+    }
+
+    const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    //get original transaction to calculate balance change
+
+    const originalTransaction = await db.transaction.findUnique({
+      where: {
+        id,
+        userId: user.id,
+      },
+      include: {
+        account: true,
+      },
+    });
+
+    if (!originalTransaction)
+      throw new Error("Original transaction not found !!");
+
+    const oldBalanceChange =
+      originalTransaction.type === "EXPENSE"
+        ? -originalTransaction.amount
+        : originalTransaction.amount;
+
+    const newBalanceChange =
+      data.type === "EXPENSE"
+        ? -data.amount
+        : data.amount;
+
+    const netBalanceChange = newBalanceChange - oldBalanceChange;
+
+    const transaction = await db.$transaction(async (tx) => {
+      const updated = await tx.transaction.update({
+        where: {
+          id,
+          userId: user.id,
+        },
+        data: {
+          ...data,
+          userId: user.id,
+          nextRecurringDate:
+            data.isRecurring && data.recurringInterval
+              ? calculateNextRecurringDate(data.date, data.recurringInterval)
+              : null,
+        },
+      });
+
+      //update account balance
+      await tx.account.update({
+        where: { id: data.accountId },
+        data: {
+          balance: {
+            increment: netBalanceChange,
+          },
+        },
+      });
+
+      return updated;
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath(`/account/${data.accountId}`);
+
+    return { success: true, data: serializeAmount(transaction) };
+  } catch (err) {
+    console.error(err.message);
+    throw new Error(err);
   }
 }

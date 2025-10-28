@@ -133,12 +133,12 @@ const AccountChart = ({ transactions }) => {
             <p className="text-muted-foreground">Total Income</p>
             <p
               className={`font-bold text-lg ${
-                total.income - total.expense.toFixed(2) >= 0
+                total.income.toFixed(2) - total.expense.toFixed(2) >= 0
                   ? "text-green-500"
                   : "text-red-500"
               }`}
             >
-              {total.income - total.expense.toFixed(2)}
+              {(total.income.toFixed(2) - total.expense.toFixed(2)).toFixed(2)}
             </p>
           </div>
         </div>

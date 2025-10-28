@@ -62,8 +62,7 @@ import useFetch from "@/hooks/use-fetch";
 import { bulkDeleteTransactions } from "@/actions/account";
 import { toast } from "sonner";
 import { BarLoader } from "react-spinners";
-import { Limelight } from "next/font/google";
-import { startsWith } from "zod";
+
 
 const RECURRING_INTERVALS = {
   DAILY: "Daily",
@@ -471,7 +470,7 @@ const TransactionTable = ({ transactions }) => {
                             onClick={() => {
                               // console.log("Edit Clicked..");
                               router.push(
-                                `/transaction/create?edit=${transaction.id}}`
+                                `/transaction/create?edit=${transaction.id}`
                               );
                             }}
                           >
