@@ -4,12 +4,11 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-
-
 const serializeAccount = (obj) => {
   const serialize = { ...obj };
 
   if (obj.amount) {
+    serialize.amount = Number(obj.amount);
     serialize.amount = Number(obj.amount);
   }
 
@@ -19,7 +18,7 @@ const serializeAccount = (obj) => {
 
   // Serialize transactions if they exist
   if (obj.transactions && Array.isArray(obj.transactions)) {
-    serialize.transactions = obj.transactions.map(transaction => ({
+    serialize.transactions = obj.transactions.map((transaction) => ({
       ...transaction,
       amount: Number(transaction.amount), // Convert Decimal to Number
     }));
@@ -30,7 +29,6 @@ const serializeAccount = (obj) => {
 
 export default async function createAccount(data) {
   try {
-
     const { userId } = await auth();
 
     if (!userId) {
@@ -83,7 +81,6 @@ export default async function createAccount(data) {
   }
 }
 
-
 export async function getAccounts() {
   try {
     const { userId } = await auth();
@@ -101,15 +98,44 @@ export async function getAccounts() {
     const accounts = await db.account.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
-      include : {
+      include: {
         transactions: true,
-      }
+      },
     });
 
-
-     const serializedAccount = accounts.map(serializeAccount);
+    const serializedAccount = accounts.map(serializeAccount);
 
     return { success: true, serializedAccount };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+export async function getDashboardData(params) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const transactions = await db.transaction.findMany({
+      where: { userId: user.id },
+      orderBy: { date: "desc" },
+    });
+
+    const serializeTransaction = transactions.map((t) => {
+      t.amount = t.amount.toNumber();
+      return t;
+    });
+
+    return { success: true, serializeTransaction };
   } catch (err) {
     throw new Error(err.message);
   }
