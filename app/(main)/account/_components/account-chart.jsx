@@ -39,7 +39,7 @@ const AccountChart = ({ transactions }) => {
     const range = DATA_RANGES[dataRange];
     const now = new Date();
 
-    console.log({ now });
+    // console.log({ now });
 
     const startDate = range.days
       ? startOfDay(subDays(now, range.days))
@@ -47,13 +47,13 @@ const AccountChart = ({ transactions }) => {
 
     // const startDate = new Date("Sat Jun 30 2025 00:00:00");
 
-    console.log({ startDate });
+    // console.log({ startDate });
 
     const filterData = transactions.filter(
       (t) => new Date(t.date) >= startDate && new Date(t.date) <= endOfDay(now)
     );
 
-    console.log("filterdata , ", filterData);
+    // console.log("filterdata , ", filterData);
 
     const grouped = filterData.reduce((acc, transaction) => {
       const date = format(new Date(transaction.date), "MMM dd");
@@ -89,9 +89,9 @@ const AccountChart = ({ transactions }) => {
     );
   }, [filterTransationData]);
 
-  console.log({ total });
+  // console.log({ total });
 
-  console.log("filterTransationData ", filterTransationData);
+  // console.log("filterTransationData ", filterTransationData);
 
   return (
     <Card>
@@ -106,7 +106,7 @@ const AccountChart = ({ transactions }) => {
           <SelectContent>
             {Object.entries(DATA_RANGES).map(([key, { label }]) => {
               return (
-                <SelectItem className="cursor-pointer" value={key}>
+                <SelectItem className="cursor-pointer" key={key} value={key}>
                   {label}
                 </SelectItem>
               );
@@ -130,7 +130,7 @@ const AccountChart = ({ transactions }) => {
             </p>
           </div>
           <div className="text-center">
-            <p className="text-muted-foreground">Total Income</p>
+            <p className="text-muted-foreground">Net</p>
             <p
               className={`font-bold text-lg ${
                 total.income.toFixed(2) - total.expense.toFixed(2) >= 0

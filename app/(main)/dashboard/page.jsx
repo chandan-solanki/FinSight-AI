@@ -20,9 +20,9 @@ const DashboardPage = async () => {
 
   const { serializeTransaction: transactions } = await getDashboardData();
 
-  console.log({ transactions });
+  // console.log({ transactions });
 
-  console.log(accounts);
+  // console.log(accounts);
 
   // console.log({ budgetData });
 

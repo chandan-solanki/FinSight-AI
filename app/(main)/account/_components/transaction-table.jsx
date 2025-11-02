@@ -30,6 +30,7 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
+  Loader2,
   MoreHorizontal,
   RefreshCcw,
   SearchIcon,
@@ -62,7 +63,6 @@ import useFetch from "@/hooks/use-fetch";
 import { bulkDeleteTransactions } from "@/actions/account";
 import { toast } from "sonner";
 import { BarLoader } from "react-spinners";
-
 
 const RECURRING_INTERVALS = {
   DAILY: "Daily",
@@ -505,7 +505,9 @@ const TransactionTable = ({ transactions }) => {
               />
             </PaginationItem>
             <PaginationItem>
-               <PaginationLink isActive={selectPage} className="cursor-pointer">{selectPage}</PaginationLink>
+              <PaginationLink isActive={selectPage} className="cursor-pointer">
+                {selectPage}
+              </PaginationLink>
             </PaginationItem>
             {selectPage <= totalPage - 1 && (
               <PaginationItem>
@@ -520,6 +522,7 @@ const TransactionTable = ({ transactions }) => {
           </PaginationContent>
         </Pagination>
       )}
+
     </div>
   );
 };

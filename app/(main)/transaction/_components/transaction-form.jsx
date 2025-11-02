@@ -118,7 +118,7 @@ const AddTransactionForm = ({
   }, [transactionLoading, transactionResult, editMode]);
 
   const handleScanComleted = (scanData) => {
-    console.log(scanData);
+    // console.log(scanData);
 
     if (scanData) {
       setValue("amount", scanData.amount.toString());

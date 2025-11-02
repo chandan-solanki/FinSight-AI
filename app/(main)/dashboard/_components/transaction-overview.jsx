@@ -81,14 +81,14 @@ const DashBoardOverview = ({ accounts, transactions }) => {
     }
   );
 
-  console.log(expenseByCategory);
-  console.log(pieChartData);
+  // console.log(expenseByCategory);
+  // console.log({ pieChartData });
 
   return (
     <div className="grid gap-4  md:grid-cols-2">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <CardTitle className="text-base font-normal">
+        <CardHeader className="flex flex-row max-sm:flex-col items-center justify-between pb-4">
+          <CardTitle className="text-base font-normal max-sm:w-[100%]">
             Recent Transactions
           </CardTitle>
 
@@ -96,13 +96,13 @@ const DashBoardOverview = ({ accounts, transactions }) => {
             value={selectedAccountId}
             onValueChange={setSelectedAccountId}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] max-sm:w-[100%]">
               <SelectValue placeholder="Select account" />
             </SelectTrigger>
             <SelectContent>
               {accounts.map((a) => {
                 return (
-                  <SelectItem id={a.id} value={a.id}>
+                  <SelectItem key={a.id} id={a.id} value={a.id}>
                     {a.name}
                   </SelectItem>
                 );
@@ -117,8 +117,8 @@ const DashBoardOverview = ({ accounts, transactions }) => {
             ) : (
               recentTransactions.map((t) => {
                 return (
-                  <div id={t.id} className="flex items-center justify-between">
-                    <div className="space-y-1">
+                  <div key={t.id} className="flex items-center justify-between">
+                    <div  className="space-y-1">
                       <p className="text-sm font-medium  leading-none">
                         {t.description || "Untitled Transaction"}
                       </p>

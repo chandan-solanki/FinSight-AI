@@ -1,9 +1,12 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/Toast";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,10 +25,12 @@ export default function RootLayout({ children }) {
         lang="en"
         className={inter.className + " overflow-x-hidden scroll-smooth"}
       >
-        <body className="overflow-x-hidden">
+        <body className="overflow-x-hidden relative">
           <Header />
 
-          <main className="min-h-screen flex flex-col my-4">{children}</main>
+          <main className="min-h-screen relative flex flex-col my-4">
+            {children}
+          </main>
 
           <footer className="bg-gray-100 border-t border-gray-200 py-5">
             <div className="text-center p-4">

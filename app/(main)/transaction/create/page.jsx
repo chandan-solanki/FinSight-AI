@@ -1,22 +1,27 @@
 "use server";
 import { getAccounts } from "@/actions/dashboard";
 import { defaultCategories } from "@/data/categories";
-import React from "react";
+import React, { Suspense } from "react";
 import AddTransactionForm from "../_components/transaction-form";
-import { createServerSearchParamsForMetadata } from "next/dist/server/request/search-params";
 import { getTransaction } from "@/actions/createtransaction";
-import { IndentIcon } from "lucide-react";
+import { BarLoader } from "react-spinners";
+import { notFound } from "next/navigation";
 
 const AddTransactionPage = async ({ searchParams }) => {
   const editId = searchParams?.edit;
-  console.log(editId);
+  // console.log(editId);
 
   const { serializedAccount: accounts } = await getAccounts();
 
   let initialData = null;
 
   if (editId) {
-    initialData = await getTransaction(editId);
+    // constuseFetch(getTransaction)
+    try {
+      initialData = await getTransaction(editId);
+    } catch (err) {
+      notFound(err);
+    }
   }
 
   // console.log({ accounts });
@@ -24,16 +29,19 @@ const AddTransactionPage = async ({ searchParams }) => {
   // console.log({initialData})
   return (
     <div className="space-y-8 px-5 ">
-      <h1 className="text-5xl gradient text-center">
+      <h1 className="text-5xl max-sm:text-3xl gradient text-center">
         {editId ? "Update Transaction" : "Add Transaction"}
       </h1>
-
-      <AddTransactionForm
-        accounts={accounts}
-        initialData={initialData}
-        editMode={!!editId}
-        categories={defaultCategories}
-      />
+      <Suspense
+        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
+      >
+        <AddTransactionForm
+          accounts={accounts}
+          initialData={initialData}
+          editMode={!!editId}
+          categories={defaultCategories}
+        />
+      </Suspense>
     </div>
   );
 };
