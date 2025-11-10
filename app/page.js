@@ -89,6 +89,7 @@ export default function Home() {
                         className="rounded-full"
                         width={40}
                         height={40}
+                        unoptimized
                       />
                       <div className="ml-">
                         <div className="font-semibold">{testi.name}</div>

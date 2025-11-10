@@ -42,7 +42,7 @@ const COLORS = [
 
 const DashBoardOverview = ({ accounts, transactions }) => {
   const [selectedAccountId, setSelectedAccountId] = useState(
-    accounts.find((a) => a.isDefault)?.id || accounts[0].id
+    accounts.find((a) => a.isDefault)?.id || accounts[0]?.id
   );
 
   const accountTransactions = transactions.filter(
@@ -156,7 +156,7 @@ const DashBoardOverview = ({ accounts, transactions }) => {
             Monthly Expense Breakdown
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0 pb-5">
+        <CardContent className="p-0 pl-5 pb-5">
           {pieChartData.length === 0 ? (
             <p>No expenses this month</p>
           ) : (

@@ -12,6 +12,9 @@ export const metadata = {
   title: "FinSight AI",
   description:
     "Master your money with FinSight AI — the smart way to track expenses, plan budgets, and unlock powerful financial insights powered by artificial intelligence.",
+  icons: {
+    icon: "/logo.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
